@@ -5,11 +5,11 @@ st.title('Land Lot Prediction')
 st.markdown('##### This is the final project for SkillFactory datascience course')
 
 
-# Streamlit status
+# Status
 status = st.radio('What is your status', (3,4))
 print(f'Your status is', status)
 
-# Streamlit cadastre
+# Cadastre
 cadastre = st.selectbox('Your cadastre number', [3222055100, 3222086800, 6525082500, 6525085600, 6523584000,
        6520687300, 6520687300, 6520686600, 6520680200, 5621455300,
        5621485000, 1423385000, 1222986000, 5321681000, 6520680200,
@@ -85,7 +85,7 @@ cadastre = st.selectbox('Your cadastre number', [3222055100, 3222086800, 6525082
 print(f'Your cadastre number is', cadastre)
 
 
-#Streamlit select test
+# Koatuu
 koatuu = st.selectbox('Your Koatuu', ['Іванків, Іванківська, Вишгородський, Київська, Україна',
        'Іванківська, Вишгородський, Київська, Україна',
        'Подо-Калинівка, Ювілейна, Херсонський, Херсонська, Україна',
@@ -554,28 +554,30 @@ koatuu = st.selectbox('Your Koatuu', ['Іванків, Іванківська, �
 
 print(f'Your status is', koatuu)
 
-# PricePerOne Slider
-pricePerOne = st.slider('What`s the price per one ha', 4234, 128241)
-print(f'Your price per one ha is ', pricePerOne)
+#print('Hello')
 
-# Estimated Price Slider
-estimatedPrice = st.slider('What`s the estimated price for your lot', 105, 9415117)
-print(f'Your lot`s estimated price is ', estimatedPrice)
+# pricePerOne slider
+pricePerOne = st.slider('Please, select the price for ha', 4234, 128241)
+print(f'Your lot`s price per ha is', pricePerOne)
 
-# Rent Rate Slider
-rentRate = st.slider('What`s the rent rate for your lot', 46, 41165)
-print(f'Your lot`s rent rate is ', rentRate)
+# estimatePrice slider
+estimatePrice = st.slider('Please, select estimated price for the lot', 105, 9415117)
+print(f'Your estimated price for the lot is', estimatePrice)
 
-# Rental Yield Slider
-rentalYield = st.slider('What`s the rental yield for your lot', 0.2, 7.7)
-print(f'Your lot`s rental yield is ', rentalYield)
+# rentRate slider
+rentRate = st.slider('Please, select renatl rate for the lot', 46, 41165)
+print(f'Your lot`s rent rate is', rentRate)
 
-# Lot`s purpose radios`
-purpose = st.radio('What is the purpose of your lot', (1,0))
+# rentRate slider
+rentalYield = st.slider('Please, select renatal yield for the lot', 0.2, 7.7)
+print(f'Your lot`s rental yield is', rentalYield)
+
+# purpose radio
+purpose = st.radio('What is your lot`s purpose', (0,1))
 print(f'Your lot`s purpose is', purpose)
 
-# Owner EDRPOU
-ownerEdrpou = st.selectbox('Lot`s owner EDRPOU', [3578305088, 2284411333, 2520006184, 2762921072, 1518314176,
+# ownerEdrpou select
+ownerEdrpou = st.selectbox('Choose your lot`s ownerEdrpou', [3578305088, 2284411333, 2520006184, 2762921072, 1518314176,
        3408701198, 2797803591, 1963310215, 1856508382, 3274600270,
        2455910569, 1616305266, 1433704084, 1850110767, 1951910110,
        3031803540, 3155924801, 2472515715, 2283523104, 1091716327,
@@ -628,16 +630,69 @@ ownerEdrpou = st.selectbox('Lot`s owner EDRPOU', [3578305088, 2284411333, 252000
        2754408142, 2074419265, 2321419595, 2699704886, 2792021314,
        2570616745, 2176702719, 2194311524, 3239216160, 3182115588,
        2258417723, 2741803480, 3106522390])
+print(f'Your lot`s ownerEdrpou', ownerEdrpou)
 
-print(f'Lot`s owner EDRPOU is', ownerEdrpou)
+# renterCompany select
+renterCompany = st.selectbox('Choose your lot`s renterCompany', [15.0, 17.0, 14.0, 19.0, 21.0, 23.0, 22.0, 18.0, 20.0, 16.0, 13.0])
+print(f'Your lot`s renterCompany', renterCompany)
 
-# Renter company
-renterCompany = st.selectbox('Lot`s renter company', [15.0, 17.0, 14.0, 19.0, 21.0, 23.0, 22.0, 18.0, 20.0, 16.0, 13.0])
-print(f'Renter company is', renterCompany)
-
-# Renter EDRPOU
-renterEdrpou = st.selectbox('Lot`s renter Edrpou', [41102844, 41101589, 41099127, 41102163, 41103827, 41105190,
+# renterEdrpou select
+renterEdrpou = st.selectbox('Choose your lot`s renterEdrpou', [41102844, 41101589, 41099127, 41102163, 41103827, 41105190,
        34264631, 41107067, 41104731, 41104967, 41481188])
-print(f'Renter Edrpou is', renterEdrpou)
+print(f'Your lot`s renterEdrpou', renterEdrpou)
+
+# region_id select
+region_id = st.selectbox('Select your lot`s region_id', [3222055100, 3222086800, 6525082500, 6525085600, 6523584000,
+       6520687300, 6520686600, 6520680200, 5621455300, 5621485000,
+       1423385000, 1222986000, 5321681000, 6520683000, 4825782700,
+       5924487600, 5924483800, 5924480400, 5925080800, 6520686900,
+       6520687100, 4820681200, 4820981800, 4423382500, 5320483000,
+       5322686200, 5325183200, 5924185400, 5924189600, 5320686800,
+       5924186100, 6824480500, 6523580700, 6520684400, 2621655700,
+       5325182600, 6520985000, 6520685200, 4620387000, 5925080400,
+       6824485000, 4825182600, 4620381300, 7420385000, 5923883800,
+       5924785600, 7422783500, 5324585100, 5320682800, 5325185500,
+       4825181200, 5925081600, 4820981200, 5321684900, 5320481400,
+       5924787900, 5924786300, 5922681700, 5922980400, 6324283500,
+       5922981200, 7422088400, 7422782500, 7420386000, 5920380800,
+       5922985800, 4820980900, 4820982400, 4820985000, 6525086000,
+       6523884500, 6523287700, 5322881100, 5320485500, 6520983700,
+       5924182000, 6325786500, 5922986200, 5920388700, 5621485500,
+       2322180400, 5320483400, 5920384000, 5925381200, 5320482000,
+       5320481100, 5924182300, 7422787500, 5325181700, 5322681500,
+       5920380400, 5925082400, 5322682800, 5320484600, 5320486900,
+       5320481700, 6520681200, 6520681800, 1422783400, 1421586800,
+       1824284700, 6525483800, 3222083900, 1824284000, 5321610100,
+       5924486700, 5920386900, 5922387600, 2624410100, 5924187600])
+print(f'Your lot`s region_id', region_id)
+
+# estimateMpnth select
+estimateMonth = st.selectbox('Select your lot`s estimateMonth', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+print(f'Your lot`s estimateMonth', estimateMonth)
+
+# estimateDay select
+estimateDay = st.selectbox('Select your lot`s estimateDay', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 
+19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
+print(f'Your lot`s estimateDay', estimateDay)
+
+# estimateYear radio
+estimateYear = st.radio('What is your lot`s estimateYear', (2019,2020, 2021))
+print(f'Your lot`s estimateYear is', estimateYear)
+
+# daysDelta slider
+daysDelta = st.slider('Please, select days delta for the lot', 68, 1160)
+print(f'Your lot`s days delta is', daysDelta)
+
+# daysRentPayDelta slider
+daysRentPayDelta = st.slider('Please, select days rent pay delta for the lot', -522, 1396)
+print(f'Your lot`s days rent pay delta is', daysDelta)
+
+# daysRentPayDeltaSign radio
+daysRentPayDeltaSign = st.radio('What is your lot`s daysRentPayDeltaSign', ("-","+"))
+print(f'Your lot`s daysRentPayDeltaSign', estimateYear)
+
+# area_win slider
+area_win = st.slider('Please, select area win for the lot', 0.1575, 10.276)
+print(f'Your lot`s area win is', area_win)
 
 print()
