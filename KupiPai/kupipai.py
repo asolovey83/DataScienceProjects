@@ -1,7 +1,18 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor
 from catboost import CatBoostRegressor
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+
+#Variables
+RANDOM_SEED = 42
+VAL_SIZE = 0.15
+
+# A target metric function
+def mape(y_true, y_pred):    
+    return np.mean(np.abs((y_pred-y_true)/y_true))
 
 
 df = pd.read_csv('land_lots_eda_available.csv')
@@ -13,10 +24,6 @@ df.drop(['price'], axis = 1, inplace = True)
 df.drop(['isAvailable'], axis = 1, inplace = True)
 
 df['label'] = 1
-
-print(df.head())
-print(df.info())
-
 
 st.title('Land Lot Prediction')
 st.markdown('##### This is the final project for SkillFactory datascience course')
@@ -498,8 +505,8 @@ print(f'Your status is', koatuu)
 #print('Hello')
 
 # pricePerOne slider
-pricePerOne = st.slider('Please, select the price for ha', 4234, 128241)
-print(f'Your lot`s price per ha is', pricePerOne)
+lot_pricePerOne = st.slider('Please, select the price for ha', 4234, 128241)
+print(f'Your lot`s price per ha is', lot_pricePerOne)
 
 # estimatePrice slider
 estimatePrice = st.slider('Please, select estimated price for the lot', 105, 9415117)
@@ -630,7 +637,13 @@ print(f'Your lot`s days rent pay delta is', daysDelta)
 
 # daysRentPayDeltaSign radio
 daysRentPayDeltaSign = st.radio('What is your lot`s daysRentPayDeltaSign', ("-","+"))
-print(f'Your lot`s daysRentPayDeltaSign', estimateYear)
+
+if daysRentPayDeltaSign == '+':
+       daysRentPayDeltaSign = 1
+else:
+       daysRentPayDeltaSign = 0
+
+print(f'Your lot`s daysRentPayDeltaSign', daysRentPayDeltaSign)
 
 # area_win slider
 area_win = st.slider('Please, select area win for the lot', 0.1575, 10.276)
@@ -640,7 +653,7 @@ print()
 
 data = {
        'status':status,
-       'pricePerOne': pricePerOne,
+       'pricePerOne': lot_pricePerOne,
        'estimatePrice': estimatePrice,
        'rentRate': rentRate,
        'rentalYield': rentalYield,
@@ -667,3 +680,80 @@ print(df2.info())
 df_result = pd.concat([df,df2])
 
 print(df_result.info())
+
+#Numerical columns
+num_col = ['estimatePrice', 'rentalYield', 'daysDelta', 'daysRentPayDelta', 'area_win']
+
+#Categorical columns
+cat_col = ['status', 'region_id', 'rentRate', 'purpose', 'koatuuLocation', 'ownerEdrpou', 'renterCompany', 'estimateMonth', 'estimateDay', 'estimateYear', 'daysRentPayDeltaSign']
+
+label = 'label'
+
+#print(df_result[label])
+
+#Scaling numerical features
+scaled_features = MinMaxScaler().fit_transform(df_result[num_col].values)
+df_num = pd.DataFrame(scaled_features, index=df_result[num_col].index, columns=df_result[num_col].columns)
+print(df_num.head())
+
+#Categorical features processing
+
+df_cat = df_result[cat_col]
+
+# Label Encoding
+for column in cat_col:
+    df_cat[column] = df_cat[column].astype('category').cat.codes
+
+# One-Hot Encoding
+df_cat = pd.get_dummies(df_cat, columns=cat_col, dummy_na=False)
+
+print(df_cat.head())
+
+df_result = pd.concat([df_num, df_cat, df_result[label]], axis=1)
+print(df_result.info())
+
+X = df_result[df_result[label] == 1]
+X.drop(['label'], axis = 1, inplace = True)
+
+lot = df_result[df_result[label] == 0]
+lot.drop(['label'], axis = 1, inplace = True)
+
+#print(X.info())
+#print(lot.head())
+
+# Splitting data
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=VAL_SIZE, shuffle = True, random_state=RANDOM_SEED)
+
+#Catbost Regressor
+model_catboost = CatBoostRegressor(iterations = 5000,                       
+                          random_seed = RANDOM_SEED,
+                          eval_metric='MAPE',
+                          custom_metric=['RMSE', 'MAE'],
+                          od_wait=500                          
+                         )
+model_catboost.fit(X_train, y_train,
+         eval_set=(X_valid, y_valid),
+         verbose_eval=100,
+         use_best_model=True       
+         )
+
+test_predict_catboost = model_catboost.predict(X_valid)
+print(f"The precision of the Catboosting Regressor by the MAPE metrics is: {(mape(y_valid, test_predict_catboost))*100:0.2f}%")
+
+# Gradient Boosting Regressor with hyperparameters tuned
+model_gbr = GradientBoostingRegressor(n_estimators=250, learning_rate= 0.1, max_depth=5, random_state=RANDOM_SEED)
+model_gbr.fit(X_train, y_train)
+y_pred_gbr = model_gbr.predict(X_valid)
+print(f"The precision of the Gradient Bossting Regressor with hyperparameters tuned on MAPE metric is: {(mape(y_valid, y_pred_gbr))*100:0.2f}%")
+
+# Doing blend prediction of the Catboost algorithm and Gradiend Boosting
+blend_predict = (test_predict_catboost + y_pred_gbr) / 2
+print(f"The precision of the blend of the best models by the MAPE metric is: {(mape(y_valid, blend_predict))*100:0.2f}%")
+
+lot_pricePerOne_pred = (model_catboost.predict(lot) + model_gbr.predict(lot))/2
+
+print(f"The lot`s real price per ha is: {lot_pricePerOne}")
+print(f"The lot`s predicted price per ha is: {lot_pricePerOne_pred[0]}")
+
+st.write("The lot's real price per ha is:", lot_pricePerOne)
+st.write("The lot's predicted price per ha is:", int(lot_pricePerOne_pred[0]))
