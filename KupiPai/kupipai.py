@@ -14,6 +14,36 @@ VAL_SIZE = 0.15
 def mape(y_true, y_pred):    
     return np.mean(np.abs((y_pred-y_true)/y_true))
 
+# A function for outliers preprocessing
+def outliers_replacement(df, column, method='median'):
+    '''
+    Replaces outliers in the series with the specific value 
+    method='median' - replace with median
+    method='average' - replace with mean
+    method ='probable' - random distribution
+    '''
+    IQR = df[column].quantile(0.75) - df[column].quantile(0.25)
+    perc25 = df[column].quantile(0.25)
+    perc75 = df[column].quantile(0.75)
+
+    f = perc25 - 1.5*IQR
+    l = perc75 + 1.5*IQR
+
+    if method =='median':
+        df.loc[(df[column] < f) | (df[column] > l), column] = df[column].median()
+    elif method =='average':
+        df.loc[(df[column] < f) | (df[column] > l), column] = df[column].mean()
+    elif method =='probable':
+        # replacing outliers to nan 
+        df[column] = np.where((df[column] < f) | (df[column] > l), np.nan, df[column])
+        mask = df[column].isna()
+        # distribution stats
+        p = df[column].value_counts() / len(df[column].dropna())
+        # filling missing values with the probability `p`
+        df.loc[mask, column] = np.random.choice(p.index.to_list(),
+                                            size=mask.sum(), 
+                                            p=p.to_list())
+
 
 df = pd.read_csv('land_lots_eda_available.csv')
 y = df['pricePerOne']
@@ -513,7 +543,7 @@ estimatePrice = st.slider('Please, select estimated price for the lot', 105, 941
 print(f'Your estimated price for the lot is', estimatePrice)
 
 # rentRate slider
-rentRate = st.slider('Please, select renatl rate for the lot', 46, 41165)
+rentRate = st.slider('Please, select rental rate for the lot', 46, 41165)
 print(f'Your lot`s rent rate is', rentRate)
 
 # rentRate slider
@@ -680,6 +710,12 @@ print(df2.info())
 df_result = pd.concat([df,df2])
 
 print(df_result.info())
+
+# Replacing outliers
+outliers_replacement(df_result, 'estimatePrice', method='median')
+outliers_replacement(df_result, 'daysDelta', method='median')
+outliers_replacement(df_result, 'daysRentPayDelta', method='median')
+
 
 #Numerical columns
 num_col = ['estimatePrice', 'rentalYield', 'daysDelta', 'daysRentPayDelta', 'area_win']
