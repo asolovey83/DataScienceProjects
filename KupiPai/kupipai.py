@@ -535,12 +535,21 @@ print(f'Your status is', koatuu)
 #print('Hello')
 
 # pricePerOne slider
-lot_pricePerOne = st.slider('Please, select the price for ha', 4234, 128241)
+#lot_pricePerOne = st.slider('Please, select the price for ha', 4234, 128241)
+#print(f'Your lot`s price per ha is', lot_pricePerOne)
+
+# pricePerOne numberinput
+lot_pricePerOne = st.number_input('Please, input the real price for ha', 4234, 128241)
 print(f'Your lot`s price per ha is', lot_pricePerOne)
 
+
 # estimatePrice slider
-estimatePrice = st.slider('Please, select estimated price for the lot', 105, 9415117)
-print(f'Your estimated price for the lot is', estimatePrice)
+#estimatePrice = st.slider('Please, select estimated price for the lot', 105, 9415117)
+#print(f'Your estimated price for the lot is', estimatePrice)
+
+# estimatePrice numberinput
+estimatePrice = st.number_input('Please, input estimated price for the lot', 105, 9415117)
+#print(f'Your estimated price for the lot is', estimatePrice)
 
 # rentRate slider
 rentRate = st.slider('Please, select rental rate for the lot', 46, 41165)
